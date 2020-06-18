@@ -1,1 +1,1 @@
-web: gunicorn AI_PJ.wsgi
+web: gunicorn --pythonpath AI_PJ AI_PJ.wsgi
