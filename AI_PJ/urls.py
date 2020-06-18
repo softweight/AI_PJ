@@ -17,9 +17,12 @@ from django.contrib import admin
 from django.conf.urls import include, url
 from django.contrib import admin
 from django.urls import include, path
+from line_bot import views
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('api/search', views.api_search),
     path('line_bot/', include('line_bot.urls')),
     
 ]
