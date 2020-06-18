@@ -25,7 +25,9 @@ SECRET_KEY = 's)$^urz6@cu)o+bsj1ss1%*mht-pz8-&_(#_ugse#gt653r6d!'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    '*'
+]
 
 
 # linebot相關
