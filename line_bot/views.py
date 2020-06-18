@@ -17,8 +17,6 @@ parser = WebhookParser(settings.LINE_CHANNEL_SECRET)
 user_stage = {}
 
 
-
-
 @csrf_exempt
 def callback(request):
 
@@ -34,7 +32,7 @@ def callback(request):
             return HttpResponseBadRequest()
 
         for event in events:    #每個訊息進來時
-            url = 'http://localhost:8000/api/search'
+            url = 'https://ai-project-bot.herokuapp.com/api/search'
             r = requests.post(url, data={"value": event.message.text})
             data = r.json()
             for i in data['result']:
