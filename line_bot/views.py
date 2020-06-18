@@ -16,20 +16,7 @@ line_bot_api = LineBotApi(settings.LINE_CHANNEL_ACCESS_TOKEN)
 parser = WebhookParser(settings.LINE_CHANNEL_SECRET)
 user_stage = {}
 
-@csrf_exempt
-def api_search(req):
-    if req.method == 'POST':
-        result = []
-        url_search = 'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term='+ req.POST['value'] +'&reldate=90&datetype=edat&retmax=100&usehistory=y'
-        root = ET.fromstring(requests.get(url_search))
-        for child in root.iter('WebEnv'):
-            WebEnv = child.text
 
-        url_fetch = 'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=Pubmed&retmode=text&rettype=abstract&term='+ req.POST['value'] +'&query_key=1&retstart=0&retmax=1000&WebEnv='+WebEnv
-        ret_fetch = requests.get(url_fetch)
-
-        result.append({'data': ret_fetch.text[0:200]})
-        return JsonResponse({'result': result})
 
 
 @csrf_exempt

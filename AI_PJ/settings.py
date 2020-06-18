@@ -26,13 +26,14 @@ SECRET_KEY = 's)$^urz6@cu)o+bsj1ss1%*mht-pz8-&_(#_ugse#gt653r6d!'
 DEBUG = False
 
 ALLOWED_HOSTS = [
-    '*'
+    '*',
+    "localhost",
+    "127.0.0.1"
 ]
 
 
 # linebot相關
 LINE_CHANNEL_ACCESS_TOKEN = "GvUHIVMUNWWOfOSZN1xZZIqTBDFkdQULdEG0pnfSkb8xm2P4tLXVtGgN7pMHsr/OPhjL2zCuF18esMicV3/l16gGeiUUXTluTHmAlEL5vUWMTpISx0XxImoKizPJMJJplbOS+eTwmcquo7RqquihoAdB04t89/1O/w1cDnyilFU="
-
 LINE_CHANNEL_SECRET = "94ac96d3b5c9c52e1c43e6650109b4d1"
 
 
@@ -46,6 +47,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'line_bot',
+    'search_tool',
 ]
 
 MIDDLEWARE = [
@@ -126,5 +128,5 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
-STATIC_URL = '/templates/static/'
-STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static'),]
+STATIC_URL = '/static/'
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'search_tool/templates/static'),]
