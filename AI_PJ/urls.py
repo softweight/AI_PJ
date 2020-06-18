@@ -21,6 +21,6 @@ from django.contrib import admin
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    
+    url('line_bot/', include('line_bot.urls')),
     
 ]
