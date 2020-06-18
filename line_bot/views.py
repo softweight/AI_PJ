@@ -50,9 +50,9 @@ def callback(request):
             url = 'http://localhost:8000/api/search'
             r = requests.post(url, data={"value": event.message.text})
             data = r.json()
-        for i in data['result']:
-            string = i['data'] + '\n'
-            line_bot_api.reply_message(event.reply_token, TextSendMessage(text=string))
+            for i in data['result']:
+                string = i['data'] + '\n'
+                line_bot_api.reply_message(event.reply_token, TextSendMessage(text=string))
 
         return HttpResponse()
     else:
