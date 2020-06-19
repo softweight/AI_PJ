@@ -15,7 +15,10 @@ from linebot.models import MessageEvent, TextSendMessage, TemplateSendMessage, C
 line_bot_api = LineBotApi(settings.LINE_CHANNEL_ACCESS_TOKEN)
 parser = WebhookParser(settings.LINE_CHANNEL_SECRET)
 user_stage = {}
-
+stage3_ask = "Else want to do ?\n1. NCBL API\n2. News search"
+stage0_ask = "Choose service:\n1. NCBI API\n2.NEWS search"
+stage1_ask = "What you want search in NCBI Lib ?"
+stage2_ask = "What you want search in NEWs img Lib ?"
 
 @csrf_exempt
 def callback(request):
@@ -32,16 +35,92 @@ def callback(request):
             return HttpResponseBadRequest()
 
         for event in events:    #每個訊息進來時
-            url = 'https://ai-project-bot.herokuapp.com/api/search'
-            r = requests.post(url, data={"value": event.message.text})
-            data = r.json()
-            for i in data['result']:
-                string = i['data'] + '\n'
-                line_bot_api.reply_message(event.reply_token, TextSendMessage(text=string))
+            if isinstance(event, MessageEvent):
+                if event.source.user_id in user_stage:
+                    if time.time()-user_stage[event.source.user_id]['time'] <= 86400:
+                        if user_stage[event.source.user_id]['stage'] == 1:
+                            try:
+                                # url = 'https://ai-project-bot.herokuapp.com/api/search'
+                                # r = requests.post(url, data={"value": event.message.text})
+                                # data = r.json()
+                                # for i in data['result']:
+                                #     string = i['data'] + '\n'
+                                user_stage[event.source.user_id] = {
+                                'stage': 3,
+                                'time': time.time()
+                                }
+                                line_bot_api.reply_message(event.reply_token, TextSendMessage(text="stage1to3"))
+                                line_bot_api.push_message(event.source.user_id,TextSendMessage(text=stage3_ask))
 
+                            except:
+                                user_stage[event.source.user_id]['stage'] = 0
+                            return HttpResponse()
+                        elif user_stage[event.source.user_id]['stage'] == 2:
+                            try:
+                                user_stage[event.source.user_id] = {
+                                'stage': 3,
+                                'time': time.time()
+                                }
+                                line_bot_api.reply_message(event.reply_token, TextSendMessage(text="stage2to3"))
+                            except:
+                                user_stage[event.source.user_id]['stage'] = 0
+                            return HttpResponse()
+                        elif user_stage[event.source.user_id]['stage'] == 3:
+                            try:
+                                if event.message.text == '1' :
+                                    user_stage[event.source.user_id] = {
+                                    'stage': 1,
+                                    'time': time.time()
+                                    }
+                                    line_bot_api.reply_message(event.reply_token, TextSendMessage(text=stage1_ask))
+                                elif event.message.text == '2' :
+                                    user_stage[event.source.user_id] = {
+                                    'stage': 2,
+                                    'time': time.time()
+                                    }
+                                    line_bot_api.reply_message(event.reply_token, TextSendMessage(text=stage2_ask))
+                                elif event.message.text == '3' :
+                                    del user_stage["event.source.user_id"]
+                                    line_bot_api.reply_message(event.reply_token, TextSendMessage(text="bye"))
+                                else :
+                                    line_bot_api.reply_message(event.reply_token, TextSendMessage(text=stage3_ask))
+                            except:
+                                user_stage[event.source.user_id]['stage'] = 0
+                            return HttpResponse()
+                # 不在user stage裡 stage=-1
+                if event.message.text == '1' :
+                    user_stage[event.source.user_id] = {
+                    'stage': 1,
+                    'time': time.time()
+                    }
+                    line_bot_api.reply_message(event.reply_token, TextSendMessage(text=stage1_ask))
+                elif event.message.text == '2' :
+                    user_stage[event.source.user_id] = {
+                    'stage': 2,
+                    'time': time.time()
+                    }
+                    line_bot_api.reply_message(event.reply_token, TextSendMessage(text=stage2_ask))
+                else :
+                    user_stage[event.source.user_id] = {
+                    'stage': 0,
+                    'time': time.time()
+                    }
+                    line_bot_api.reply_message(event.reply_token, TextSendMessage(text=stage0_ask))
+                
         return HttpResponse()
     else:
         return HttpResponseBadRequest()
+
+
+# line_bot_api.push_message(event.source.user_id,TextSendMessage(text=output))
+
+# url = 'https://ai-project-bot.herokuapp.com/api/search'
+#             r = requests.post(url, data={"value": event.message.text})
+#             data = r.json()
+#             for i in data['result']:
+#                 string = i['data'] + '\n'
+#                 line_bot_api.reply_message(event.reply_token, TextSendMessage(text=string))
+
 
 
 ### sample here
