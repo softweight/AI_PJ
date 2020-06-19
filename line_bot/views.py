@@ -17,7 +17,7 @@ parser = WebhookParser(settings.LINE_CHANNEL_SECRET)
 
 user_stage = {}
 
-stage0_ask = "Choose service:\n1. NCBI API\n2.NEWS search"
+stage0_ask = "Choose service:\n1. NCBI API\n2. NEWS search"
 stage1_ask = "What you want search in NCBI Lib ?"
 stage2_ask = "What you want search in NEWs img Lib ?"
 stage3_ask = "Else want to do ?\n1. NCBL API\n2. News search\n3. exit"
@@ -41,74 +41,85 @@ def callback(request):
                 if event.source.user_id in user_stage:
                     if time.time()-user_stage[event.source.user_id]['time'] <= 86400:
                         if user_stage[event.source.user_id]['stage'] == 1:
-                            try:
-                                # url = 'https://ai-project-bot.herokuapp.com/api/search'
-                                # r = requests.post(url, data={"value": event.message.text})
-                                # data = r.json()
-                                # for i in data['result']:
-                                #     string = i['data'] + '\n'
-                                user_stage[event.source.user_id] = {
-                                'stage': 3,
-                                'time': time.time()
-                                }
-                                line_bot_api.reply_message(event.reply_token, TextSendMessage(text="stage1to3"))
-                                line_bot_api.push_message(event.source.user_id,TextSendMessage(text=stage3_ask))
+                            user_stage[event.source.user_id] = {
+                            'stage': 3,
+                            'time': time.time()
+                            }
+                            line_bot_api.reply_message(event.reply_token, TextSendMessage(text="stage1to3\n"+stage3_ask))
+                            # line_bot_api.push_message(event.source.user_id,TextSendMessage(text=stage3_ask))
+                            return HttpResponse()
 
-                            except:
-                                user_stage[event.source.user_id]['stage'] = 0
-                            return HttpResponse()
-                        elif user_stage[event.source.user_id]['stage'] == 2:
-                            try:
+                        elif user_stage[event.source.user_id]['stage'] == 0:
+                            if event.message.text == '1' :
                                 user_stage[event.source.user_id] = {
-                                'stage': 3,
+                                'stage': 1,
                                 'time': time.time()
                                 }
-                                line_bot_api.reply_message(event.reply_token, TextSendMessage(text="stage2to3"))
-                                line_bot_api.push_message(event.source.user_id,TextSendMessage(text=stage3_ask))
-                            except:
-                                user_stage[event.source.user_id]['stage'] = 0
+                                line_bot_api.reply_message(event.reply_token, TextSendMessage(text="stage0to1\n"+stage1_ask))
+                            elif event.message.text == '2' :
+                                user_stage[event.source.user_id] = {
+                                'stage': 2,
+                                'time': time.time()
+                                }
+                                line_bot_api.reply_message(event.reply_token, TextSendMessage(text="stage0to2\n"+stage2_ask))
+                            else :
+                                user_stage[event.source.user_id] = {
+                                'stage': 0,
+                                'time': time.time()
+                                }
+                                line_bot_api.reply_message(event.reply_token, TextSendMessage(text="stage0to0\n"+"try again!\n"+stage0_ask))
                             return HttpResponse()
+
+
+                        elif user_stage[event.source.user_id]['stage'] == 2:
+                            user_stage[event.source.user_id] = {
+                            'stage': 3,
+                            'time': time.time()
+                            }
+                            line_bot_api.reply_message(event.reply_token, TextSendMessage(text="stage2to3\n" + stage3_ask))
+                            # line_bot_api.push_message(event.source.user_id,TextSendMessage(text=stage3_ask))
+                            return HttpResponse()
+
                         elif user_stage[event.source.user_id]['stage'] == 3:
-                            try:
-                                if event.message.text == '1' :
-                                    user_stage[event.source.user_id] = {
-                                    'stage': 1,
-                                    'time': time.time()
-                                    }
-                                    line_bot_api.reply_message(event.reply_token, TextSendMessage(text=stage1_ask))
-                                elif event.message.text == '2' :
-                                    user_stage[event.source.user_id] = {
-                                    'stage': 2,
-                                    'time': time.time()
-                                    }
-                                    line_bot_api.reply_message(event.reply_token, TextSendMessage(text=stage2_ask))
-                                elif event.message.text == '3' :
-                                    del user_stage["event.source.user_id"]
-                                    line_bot_api.reply_message(event.reply_token, TextSendMessage(text="bye"))
-                                else :
-                                    line_bot_api.reply_message(event.reply_token, TextSendMessage(text="Unvaildable\n"+ stage3_ask))
-                            except:
-                                user_stage[event.source.user_id]['stage'] = 0
+                            if event.message.text == '1' :
+                                user_stage[event.source.user_id] = {
+                                'stage': 1,
+                                'time': time.time()
+                                }
+                                line_bot_api.reply_message(event.reply_token, TextSendMessage(text="stage3to1\n" +stage1_ask))
+                            elif event.message.text == '2' :
+                                user_stage[event.source.user_id] = {
+                                'stage': 2,
+                                'time': time.time()
+                                }
+                                line_bot_api.reply_message(event.reply_token, TextSendMessage(text="stage3to2\n" +stage2_ask))
+                            elif event.message.text == '3' :
+                                del user_stage['event.source.user_id']
+                                line_bot_api.reply_message(event.reply_token, TextSendMessage(text="bye~"))
+                            else :
+                                line_bot_api.reply_message(event.reply_token, TextSendMessage(text="stage3to3\n" +"Unvaildable\n"+ stage3_ask))
                             return HttpResponse()
+
+
                 # 不在user stage裡 stage=-1
                 if event.message.text == '1' :
                     user_stage[event.source.user_id] = {
                     'stage': 1,
                     'time': time.time()
                     }
-                    line_bot_api.reply_message(event.reply_token, TextSendMessage(text=stage1_ask))
+                    line_bot_api.reply_message(event.reply_token, TextSendMessage(text="stage-1to1\n"+stage1_ask))
                 elif event.message.text == '2' :
                     user_stage[event.source.user_id] = {
                     'stage': 2,
                     'time': time.time()
                     }
-                    line_bot_api.reply_message(event.reply_token, TextSendMessage(text=stage2_ask))
+                    line_bot_api.reply_message(event.reply_token, TextSendMessage(text="stage-1to2\n"+stage2_ask))
                 else :
                     user_stage[event.source.user_id] = {
                     'stage': 0,
                     'time': time.time()
                     }
-                    line_bot_api.reply_message(event.reply_token, TextSendMessage(text="Unvaildable\n"+stage0_ask))
+                    line_bot_api.reply_message(event.reply_token, TextSendMessage(text="stage-1to0\n"+"Hello!\n"+stage0_ask))
                 
         return HttpResponse()
     else:
