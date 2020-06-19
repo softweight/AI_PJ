@@ -14,11 +14,13 @@ from linebot.models import MessageEvent, TextSendMessage, TemplateSendMessage, C
 
 line_bot_api = LineBotApi(settings.LINE_CHANNEL_ACCESS_TOKEN)
 parser = WebhookParser(settings.LINE_CHANNEL_SECRET)
+
 user_stage = {}
-stage3_ask = "Else want to do ?\n1. NCBL API\n2. News search"
+
 stage0_ask = "Choose service:\n1. NCBI API\n2.NEWS search"
 stage1_ask = "What you want search in NCBI Lib ?"
 stage2_ask = "What you want search in NEWs img Lib ?"
+stage3_ask = "Else want to do ?\n1. NCBL API\n2. News search\n3. exit"
 
 @csrf_exempt
 def callback(request):
@@ -62,6 +64,7 @@ def callback(request):
                                 'time': time.time()
                                 }
                                 line_bot_api.reply_message(event.reply_token, TextSendMessage(text="stage2to3"))
+                                line_bot_api.push_message(event.source.user_id,TextSendMessage(text=stage3_ask))
                             except:
                                 user_stage[event.source.user_id]['stage'] = 0
                             return HttpResponse()
@@ -83,7 +86,7 @@ def callback(request):
                                     del user_stage["event.source.user_id"]
                                     line_bot_api.reply_message(event.reply_token, TextSendMessage(text="bye"))
                                 else :
-                                    line_bot_api.reply_message(event.reply_token, TextSendMessage(text=stage3_ask))
+                                    line_bot_api.reply_message(event.reply_token, TextSendMessage(text="Unvaildable\n"+ stage3_ask))
                             except:
                                 user_stage[event.source.user_id]['stage'] = 0
                             return HttpResponse()
@@ -105,7 +108,7 @@ def callback(request):
                     'stage': 0,
                     'time': time.time()
                     }
-                    line_bot_api.reply_message(event.reply_token, TextSendMessage(text=stage0_ask))
+                    line_bot_api.reply_message(event.reply_token, TextSendMessage(text="Unvaildable\n"+stage0_ask))
                 
         return HttpResponse()
     else:
