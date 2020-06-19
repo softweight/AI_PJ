@@ -45,19 +45,19 @@ def callback(request):
                             'stage': 1,
                             'time': time.time()
                             }
-                            line_bot_api.reply_message(event.reply_token, TextSendMessage(text="stage-1to1\n"+stage1_ask))
+                            line_bot_api.reply_message(event.reply_token, TextSendMessage(text="stage--1to1\n"+stage1_ask))
                         elif event.message.text == '2' :
                             user_stage[event.source.user_id] = {
                             'stage': 2,
                             'time': time.time()
                             }
-                            line_bot_api.reply_message(event.reply_token, TextSendMessage(text="stage-1to2\n"+stage2_ask))
+                            line_bot_api.reply_message(event.reply_token, TextSendMessage(text="stage--1to2\n"+stage2_ask))
                         else :
                             user_stage[event.source.user_id] = {
                             'stage': 0,
                             'time': time.time()
                             }
-                            line_bot_api.reply_message(event.reply_token, TextSendMessage(text="stage-1to0\n"+"Hello!\n"+stage0_ask))
+                            line_bot_api.reply_message(event.reply_token, TextSendMessage(text="stage--1to0\n"+"Hello!\n"+stage0_ask))
                         return HttpResponse()
 
                     elif user_stage[event.source.user_id]['stage'] == 0:
@@ -98,26 +98,25 @@ def callback(request):
                             line_bot_api.reply_message(event.reply_token, TextSendMessage(text="stage3to3\n" +"Unvaildable\n"+ stage3_ask))
                         return HttpResponse()
 
-
-                # 不在user stage裡 stage=-1
-                if event.message.text == '1' :
-                    user_stage[event.source.user_id] = {
-                    'stage': 1,
-                    'time': time.time()
-                    }
-                    line_bot_api.reply_message(event.reply_token, TextSendMessage(text="stage-1to1\n"+stage1_ask))
-                elif event.message.text == '2' :
-                    user_stage[event.source.user_id] = {
-                    'stage': 2,
-                    'time': time.time()
-                    }
-                    line_bot_api.reply_message(event.reply_token, TextSendMessage(text="stage-1to2\n"+stage2_ask))
-                else :
-                    user_stage[event.source.user_id] = {
-                    'stage': 0,
-                    'time': time.time()
-                    }
-                    line_bot_api.reply_message(event.reply_token, TextSendMessage(text="stage-1to0\n"+"Hello!\n"+stage0_ask))
+                else:    # 不在user stage裡 stage=-1
+                    if event.message.text == '1' :
+                        user_stage[event.source.user_id] = {
+                        'stage': 1,
+                        'time': time.time()
+                        }
+                        line_bot_api.reply_message(event.reply_token, TextSendMessage(text="stage-1to1\n"+stage1_ask))
+                    elif event.message.text == '2' :
+                        user_stage[event.source.user_id] = {
+                        'stage': 2,
+                        'time': time.time()
+                        }
+                        line_bot_api.reply_message(event.reply_token, TextSendMessage(text="stage-1to2\n"+stage2_ask))
+                    else :
+                        user_stage[event.source.user_id] = {
+                        'stage': 0,
+                        'time': time.time()
+                        }
+                        line_bot_api.reply_message(event.reply_token, TextSendMessage(text="stage-1to0\n"+"Hello!\n"+stage0_ask))
                 
         return HttpResponse()
     else:
