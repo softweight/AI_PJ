@@ -12,6 +12,7 @@ from linebot import LineBotApi, WebhookParser
 from linebot.exceptions import InvalidSignatureError, LineBotApiError
 from linebot.models import MessageEvent, TextSendMessage, TemplateSendMessage, CarouselTemplate, CarouselColumn, ButtonsTemplate, PostbackTemplateAction, MessageTemplateAction, URITemplateAction
 
+import base64
 line_bot_api = LineBotApi(settings.LINE_CHANNEL_ACCESS_TOKEN)
 parser = WebhookParser(settings.LINE_CHANNEL_SECRET)
 
@@ -40,7 +41,10 @@ def callback(request):
             if isinstance(event, MessageEvent):
                 ipt_msg =  event.message.text.split('@')
                 if ipt_msg[0] == '1':
-                    line_bot_api.reply_message(event.reply_token, TextSendMessage(text="this is NCBI\n " + "https://ai-project-bot.herokuapp.com/dw"))
+                    tob64 = event.message.text.encode("UTF-8")
+                    e = base64.b64encode(tob64)
+                    manstr = e.decode("UTF-8")
+                    line_bot_api.reply_message(event.reply_token, TextSendMessage(text="this is NCBI\n " + "https://ai-project-bot.herokuapp.com/dw"+ manstr))
                 elif ipt_msg[0] == '2':
                     line_bot_api.reply_message(event.reply_token, TextSendMessage(text="this is news " + ipt_msg[0]))
                 else:
