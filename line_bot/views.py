@@ -40,11 +40,11 @@ def callback(request):
             if isinstance(event, MessageEvent):
                 ipt_msg =  event.message.text.split('@')
                 if ipt_msg[0] == 1:
-                    line_bot_api.reply_message(event.reply_token, TextSendMessage(text="this is NCBI\n"))
+                    line_bot_api.reply_message(event.reply_token, TextSendMessage(text="this is NCBI" + ipt_msg[0]))
                 elif ipt_msg[0] == 2:
-                    line_bot_api.reply_message(event.reply_token, TextSendMessage(text="this is news\n"))
+                    line_bot_api.reply_message(event.reply_token, TextSendMessage(text="this is news" + ipt_msg[0]))
                 else:
-                    line_bot_api.reply_message(event.reply_token, TextSendMessage(text="this is else\n"))
+                    line_bot_api.reply_message(event.reply_token, TextSendMessage(text="this is else" + ipt_msg[0]))
             #     if event.source.user_id not in user_stage:
             #         user_stage[event.source.user_id] = {
             #             'stage': -1
