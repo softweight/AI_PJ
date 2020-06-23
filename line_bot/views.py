@@ -38,10 +38,11 @@ def callback(request):
 
         for event in events:    #每個訊息進來時
             if isinstance(event, MessageEvent):
-                if event.source.user_id in user_stage:
+                if event.source.user_id not in user_stage:
                     user_stage[event.source.user_id] = {
                         'stage': -1
                         }
+
                 if user_stage[event.source.user_id]['stage'] == -1:
                     if event.message.text == '1' :
                         user_stage[event.source.user_id] = 1
