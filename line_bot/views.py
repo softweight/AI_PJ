@@ -39,9 +39,9 @@ def callback(request):
         for event in events:    #每個訊息進來時
             if isinstance(event, MessageEvent):
                 ipt_msg =  event.message.text.split('@')
-                if ipt_msg[0] == 1:
+                if ipt_msg[0] == '1':
                     line_bot_api.reply_message(event.reply_token, TextSendMessage(text="this is NCBI" + ipt_msg[0]))
-                elif ipt_msg[0] == 2:
+                elif ipt_msg[0] == '2':
                     line_bot_api.reply_message(event.reply_token, TextSendMessage(text="this is news" + ipt_msg[0]))
                 else:
                     line_bot_api.reply_message(event.reply_token, TextSendMessage(text="this is else" + ipt_msg[0]))
