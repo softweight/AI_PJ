@@ -44,7 +44,7 @@ def callback(request):
                     tob64 = event.message.text.encode("UTF-8")
                     e = base64.b64encode(tob64)
                     manstr = e.decode("UTF-8")
-                    line_bot_api.reply_message(event.reply_token, TextSendMessage(text="this is NCBI\n " + "https://ai-project-bot.herokuapp.com/dw"+ manstr))
+                    line_bot_api.reply_message(event.reply_token, TextSendMessage(text="this is NCBI\n " + "https://ai-project-bot.herokuapp.com/dw/?@="+ manstr))
                 elif ipt_msg[0] == '2':
                     line_bot_api.reply_message(event.reply_token, TextSendMessage(text="this is news " + ipt_msg[0]))
                 else:
