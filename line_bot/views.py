@@ -40,11 +40,11 @@ def callback(request):
             if isinstance(event, MessageEvent):
                 ipt_msg =  event.message.text.split('@')
                 if ipt_msg[0] == '1':
-                    line_bot_api.reply_message(event.reply_token, TextSendMessage(text="this is NCBI" + ipt_msg[0]))
+                    line_bot_api.reply_message(event.reply_token, TextSendMessage(text="this is NCBI\n " + "https://ai-project-bot.herokuapp.com/dw"))
                 elif ipt_msg[0] == '2':
-                    line_bot_api.reply_message(event.reply_token, TextSendMessage(text="this is news" + ipt_msg[0]))
+                    line_bot_api.reply_message(event.reply_token, TextSendMessage(text="this is news " + ipt_msg[0]))
                 else:
-                    line_bot_api.reply_message(event.reply_token, TextSendMessage(text="this is else" + ipt_msg[0]))
+                    line_bot_api.reply_message(event.reply_token, TextSendMessage(text="this is else " + ipt_msg[0]))
                 
         return HttpResponse()
     else:
@@ -53,9 +53,9 @@ def callback(request):
 
 # line_bot_api.push_message(event.source.user_id,TextSendMessage(text=output))
 
-# url = 'https://ai-project-bot.herokuapp.com/api/search'
-#             r = requests.post(url, data={"value": event.message.text})
-#             data = r.json()
-#             for i in data['result']:
-#                 string = i['data'] + '\n'
-#                 line_bot_api.reply_message(event.reply_token, TextSendMessage(text=string))
+# url = 'https://ai-project-bot.herokuapp.com/dw'
+# r = requests.post(url, data={"value": event.message.text})
+# data = r.json()
+# for i in data['result']:
+#     string = i['data'] + '\n'
+#     line_bot_api.reply_message(event.reply_token, TextSendMessage(text=string))

@@ -22,6 +22,5 @@ from search_tool import views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('line_bot/', include('line_bot.urls')),
-    path('api/search', views.api_search),
-    
+    path('dw/',views.FileDownload),
 ]
