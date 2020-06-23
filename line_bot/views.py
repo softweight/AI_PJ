@@ -40,7 +40,7 @@ def callback(request):
             if isinstance(event, MessageEvent):
                 if event.source.user_id in user_stage:
                     user_stage[event.source.user_id] = {
-                        'stage': 1
+                        'stage': -1
                         }
                 if user_stage[event.source.user_id]['stage'] == -1:
                     if event.message.text == '1' :
