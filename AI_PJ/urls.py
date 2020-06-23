@@ -22,6 +22,6 @@ from search_tool import views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('line_bot/', include('line_bot.urls')),
-    path('search/', views.boolean_search),
+    url(r'^search/$', views.boolean_search,name='search'),
     url(r'^dw/$',views.FileDownload,name='dw'),
 ]

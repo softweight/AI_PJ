@@ -41,9 +41,9 @@ def callback(request):
             if isinstance(event, MessageEvent):
                 ipt_msg =  event.message.text.split('@')
                 if ipt_msg[0] == '1':
-                    url = 'https://ai-project-bot.herokuapp.com/search'
+                    url = 'https://ai-project-bot.herokuapp.com/search/?a='+ipt_msg[1]
                     output = ""
-                    r = requests.post(url, data={"key": ipt_msg[1]})
+                    r = requests.get(url)
                     data = r.json()
                     if len(data['result']) != 0:
                         output = data['result']
