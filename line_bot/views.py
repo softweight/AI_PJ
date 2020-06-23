@@ -13,15 +13,21 @@ from linebot.exceptions import InvalidSignatureError, LineBotApiError
 from linebot.models import MessageEvent, TextSendMessage, TemplateSendMessage, CarouselTemplate, CarouselColumn, ButtonsTemplate, PostbackTemplateAction, MessageTemplateAction, URITemplateAction
 
 import base64
+# from static.bitly_api import Connection, BitlyError, Error
 line_bot_api = LineBotApi(settings.LINE_CHANNEL_ACCESS_TOKEN)
 parser = WebhookParser(settings.LINE_CHANNEL_SECRET)
 
 user_stage = {}
 
-stage0_ask = "Choose service:\n1. NCBI API\n2. NEWS search"
-stage1_ask = "What you want search in NCBI Lib ?"
-stage2_ask = "What you want search in NEWs img Lib ?"
-stage3_ask = "Else want to do ?\n1. NCBL API\n2. News search\n3. exit"
+
+hostname = 'https://a27054810a14.ngrok.io'
+
+# def shortLink (link):
+#     BITLY_ACCESS_TOKEN ="770e7c4e4e6b98de8655716a588b5d36301ef27a"
+#     b = Connection(access_token = BITLY_ACCESS_TOKEN)
+#     response = b.shorten(link)
+#     return response['url']
+
 
 @csrf_exempt
 def callback(request):
@@ -37,27 +43,98 @@ def callback(request):
         except LineBotApiError:
             return HttpResponseBadRequest()
 
-        for event in events:    #每個訊息進來時
+        for event in events:  # 每個訊息進來時
             if isinstance(event, MessageEvent):
-                ipt_msg =  event.message.text.split('@')
+                ipt_msg = event.message.text.split('@')
                 if ipt_msg[0] == '1':
-                    url = 'https://ai-project-bot.herokuapp.com/search/?a='+ipt_msg[1]
+                    url = 'http://127.0.0.1:8000/search/?b='+ipt_msg[1]
+                    print(ipt_msg[1])
                     output = ""
                     r = requests.get(url)
                     data = r.json()
-                    if len(data['result']) != 0:
-                        output = data['result']
+                    output = data['result']
                     tob64 = output.encode("UTF-8")
                     e = base64.b64encode(tob64)
                     manstr = e.decode("UTF-8")
-                    line_bot_api.reply_message(event.reply_token, TextSendMessage(text="this is NCBI\n " + "https://ai-project-bot.herokuapp.com/dw/?@="+ manstr))
+                    # print(manstr)
+                    dw_path = hostname+'/dw/?@='+manstr
+                    buttons_template = TemplateSendMessage(
+                        alt_text='Buttons Template',
+                        template=ButtonsTemplate(
+                            title=' ',
+                            text=' ',
+                            thumbnail_image_url='https://i2.read01.com/SIG=2jnq5ks/3049625466664f534234.jpg',
+                            actions=[
+                                # MessageTemplateAction(
+                                #     label='ButtonsTemplate',
+                                #     text='ButtonsTemplate'
+                                # ),
+                                URITemplateAction(
+                                    label='下載',
+                                    uri=dw_path
+                                )
+                                # ,
+                                # PostbackTemplateAction(
+                                #     label='postback',
+                                #     text='postback text',
+                                #     data='postback1'
+                                # )
+                            ]
+                        )
+                    )
+                    line_bot_api.reply_message(event.reply_token, buttons_template)
+                    # line_bot_api.reply_message(
+                    #     event.reply_token, TextSendMessage(text=hostname+'/dw/?@='+manstr))
+
                 elif ipt_msg[0] == '2':
-                    line_bot_api.reply_message(event.reply_token, TextSendMessage(text="this is news " + ipt_msg[0]))
+                    try:
+                        url = 'http://127.0.0.1:8000/news/?a='+ipt_msg[1]
+                        output = ""
+                        r = requests.get(url)
+                        data = r.json()
+                        output = data['result']
+                        columns = []
+                        if len(output) == 0 : 
+                            line_bot_api.reply_message(event.reply_token, TextSendMessage(text="查無資料"))
+                        else:
+                            for i in range(len(output)):
+                                img_path = output[i]['url']
+                                columns.append(
+                                    CarouselColumn(
+                                        thumbnail_image_url=output[i]['url'],
+                                        title=output[i]['title'],
+                                        text='來源:Udn',
+                                        actions=[
+                                            # PostbackTemplateAction(
+                                            #     label='postback1',
+                                            #     text='postback text1',
+                                            #     data='action=buy&itemid=1'
+                                            # ),
+                                            # MessageTemplateAction(
+                                            #     label='message1',
+                                            #     text='message text1'
+                                            # )
+                                            # ,
+                                            URITemplateAction(
+                                                label='點我看大圖',
+                                                uri=img_path
+                                            )
+                                        ]
+                                    ))
+
+                            line_bot_api.reply_message(
+                                event.reply_token,
+                                TemplateSendMessage(
+                                    alt_text="???", template=CarouselTemplate(columns=columns))
+                            )
+                    except Exception as e:
+                        print(e)
+
+                    # line_bot_api.reply_message(event.reply_token, TextSendMessage(text="this is news " + ipt_msg[0]))
                 else:
-                    line_bot_api.reply_message(event.reply_token, TextSendMessage(text="this is else " + ipt_msg[0]))
-                
+                    line_bot_api.reply_message(event.reply_token, TextSendMessage(
+                        text="請輸入1@XXX 或是 2@XXX"))
+
         return HttpResponse()
     else:
         return HttpResponseBadRequest()
-
-

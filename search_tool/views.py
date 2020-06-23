@@ -27,7 +27,7 @@ class sample():
 
     def process(self, text, num):
         for i, data in enumerate(text):
-            self.counter[data] = num[i]
+            self.counter[data] = int(num[i])
     # def printf(self):
     #     print(self.title)
     #     print(self.counter)
@@ -60,6 +60,75 @@ def sorting(SampleArr):
         count += 1
     return
 
+def findOneWord(query):
+    # connAll = sqlite3.connect('News2.db')
+    # data = connAll.execute("SELECT * FROM NEWS WHERE title LIKE '%"+query+"%';").fetchall()
+    curso=connection.cursor()
+    data=curso.execute("SELECT * FROM NEWS WHERE title LIKE '%"+query+"%';").fetchall()
+    # data  = News.objects.raw("SELECT * FROM NEWS WHERE title LIKE '%"+query+"%';")
+    # connAll.close
+    score={}
+    for A_data in data:
+        news_link=A_data[4]
+        #切字
+        wordList=A_data[3]+A_data[1]+A_data[2]
+        AllCount=int(len(wordList)/2)
+        count=len(wordList.split(query))
+        score[A_data[0]]=[count/AllCount,news_link,A_data[1]]
+    # print(score)
+    maxScore=0
+    label=""
+    pic = ""
+    for newsId in score:
+        if score[newsId][0]>maxScore:
+            maxScore=score[newsId][0]
+            label=newsId
+            pic = score[newsId][1]
+    return score
+
+def merge(listAll):
+    result = []
+    listItemKey={}
+    for item in listAll:
+        for key in list(item.keys()):
+            if key in listItemKey:
+                listItemKey[key][0] += item[key][0]
+                listItemKey[key][0] += listItemKey[key][0]*2
+            else:
+                listItemKey[key] = item[key]
+    maxCnt = [0,0,0]
+    for key in list(listItemKey.keys()):
+        if listItemKey[key][0] > maxCnt[0]:
+            maxCnt[2] = maxCnt[1]
+            maxCnt[1] = maxCnt[0]
+            maxCnt[0] = listItemKey[key][0]
+    for key in list(listItemKey.keys()):
+        if maxCnt[0] == listItemKey[key][0]:
+            dicP = {'title':listItemKey[key][2],'url':listItemKey[key][1]}
+            result.append(dicP)
+        if maxCnt[1] == listItemKey[key][0]:
+            dicP = {'title':listItemKey[key][2],'url':listItemKey[key][1]}
+            result.append(dicP)
+        if maxCnt[2] == listItemKey[key][0]:
+            dicP = {'title':listItemKey[key][2],'url':listItemKey[key][1]}
+            result.append(dicP) 
+    return result
+
+@csrf_exempt
+def news_search(req):
+    try:
+        inputText = req.GET['a']
+        inputList = inputText.split(" ")
+        app = []
+        for item in inputList:
+            app.append(findOneWord(item))
+        opt = merge(app)
+        return JsonResponse({'result': opt})
+    except Exception as e:
+        print(e)
+        opt = "error"
+        # return JsonResponse({'result': opt})
+
 
 @csrf_exempt
 def boolean_search(req):
@@ -67,21 +136,27 @@ def boolean_search(req):
     opt = ""
     try:
         for data in Test.objects.all():
-            word = data.word.split('~')
-            count = data.count.split('~')
+            word = data.word.split('~')[1::]
+            count = data.count.split('~')[1::]
             SampleList.append(sample(data.id, word, count))
 
-        getkey = req.GET['a']
+        getkey = req.GET['b']
+        #print(getkey)
+        getkey = getkey.split(' ')
+        
         search(SampleList, getkey)
         SampleList.sort(key=lambda x: x.match)
         sorting(SampleList)
+        SampleList= SampleList[::-1]
         for i, var in enumerate(SampleList):
+            if(var.match==0):
+                if i==0:
+                    opt = 'not found'
+                break
             opt = opt+str(var.title)+'\n'
         return JsonResponse({'result': opt})
     except Exception as e:
         print(e)
-        opt = "error"
-        return JsonResponse({'result': opt})
 
 
 def FileDownload(request):

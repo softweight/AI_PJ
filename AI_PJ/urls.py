@@ -23,5 +23,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('line_bot/', include('line_bot.urls')),
     url(r'^search/$', views.boolean_search,name='search'),
+    url(r'^news/$', views.news_search,name='news'),
     url(r'^dw/$',views.FileDownload,name='dw'),
 ]
