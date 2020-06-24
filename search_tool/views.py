@@ -141,12 +141,17 @@ def boolean_search(req):
             word = data.word.split('~')[1::]
             count = data.count.split('~')[1::]
             SampleList.append(sample(data.id, word, count))
-
-        getkey = req.GET['b']
-        #print(getkey)
-        getkey = getkey.split(' ')
         
-        search(SampleList, getkey)
+
+        getkey = req.GET['a']
+        print(getkey)
+        
+        getkey = getkey.split('*')   #['&',['network','search']]
+        
+        getkey[1] = getkey[1].split(' ') 
+        # print(getkey[0])
+        # print(getkey[1])
+        search(SampleList, getkey[1])
         SampleList.sort(key=lambda x: x.match)
         sorting(SampleList)
         SampleList= SampleList[::-1]
@@ -155,6 +160,12 @@ def boolean_search(req):
                 if i==0:
                     opt = 'not found'
                 break
+            if getkey[0]=='1':
+                if(var.match!=len(getkey[1])):
+                    if len(opt) == 0:
+                        opt = 'not found'
+                    break
+            
             opt = opt+str(var.title)+'\n'
         return JsonResponse({'result': opt})
     except Exception as e:

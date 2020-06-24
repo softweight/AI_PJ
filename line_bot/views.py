@@ -21,7 +21,7 @@ parser = WebhookParser(settings.LINE_CHANNEL_SECRET)
 user_stage = {}
 
 
-hostname = 'https://1ef81fc4baf5.ngrok.io'
+hostname = 'https://0b1aa128ab43.ngrok.io'
 
 # def shortLink (link):
 #     BITLY_ACCESS_TOKEN ="770e7c4e4e6b98de8655716a588b5d36301ef27a"
@@ -49,8 +49,8 @@ def callback(request):
                 ipt_msg = event.message.text.split('@')
                 if ipt_msg[0] == '1':
                     try:
-                        url = 'http://127.0.0.1:8000/search/?b='+ipt_msg[1]
-                        print(ipt_msg[1])
+                        url = 'http://127.0.0.1:8000/search/?a='+ipt_msg[1]
+                        # print(ipt_msg[1])
                         output = ""
                         r = requests.get(url)
                         data = r.json()
@@ -61,7 +61,7 @@ def callback(request):
                         # print(manstr)
                         dw_path = hostname+'/dw/?@='+manstr
                         buttons_template = TemplateSendMessage(
-                            alt_text='Buttons Template',
+                            alt_text='查詢結果!!!',
                             template=ButtonsTemplate(
                                 title=' ',
                                 text=' ',

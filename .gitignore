@@ -4,3 +4,6 @@ line_bot/__pycache__
 AI_PJ/__pycache__
 */__pycache__
 *.pptx
+*/__pycache__/*.pyc
+line_bot/__pycache__/views.cpython-37.pyc
+search_tool/__pycache__/views.cpython-37.pyc

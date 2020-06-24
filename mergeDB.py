@@ -10,9 +10,9 @@ import os
 connAll = sqlite3.connect('News2.db')
 
 connAll.execute('''CREATE TABLE test
-       (ID TEXT PRIMARY KEY    ,
-       word TEXT NOT　NULL,
-       count INT);''')
+    (ID TEXT PRIMARY KEY    ,
+    word TEXT NOT　NULL,
+    count INT);''')
 
 files=os.listdir('test')
 for fileName in files:
