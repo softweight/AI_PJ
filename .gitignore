@@ -1,4 +1,6 @@
 mergeAll.db
-search/__pycache__
+search_tool/__pycache__
 line_bot/__pycache__
 AI_PJ/__pycache__
+*/__pycache__
+*.pptx

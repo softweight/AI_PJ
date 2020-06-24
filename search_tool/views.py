@@ -14,6 +14,8 @@ from .models import *
 from django.views.decorators.csrf import csrf_exempt
 
 import base64
+import jieba
+
 
 
 class sample():
@@ -118,7 +120,7 @@ def merge(listAll):
 def news_search(req):
     try:
         inputText = req.GET['a']
-        inputList = inputText.split(" ")
+        inputList = list(jieba.cut(inputText))
         app = []
         for item in inputList:
             app.append(findOneWord(item))

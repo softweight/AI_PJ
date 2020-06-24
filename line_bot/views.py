@@ -1,4 +1,5 @@
 import requests
+import requests
 import time
 import xml.etree.ElementTree as ET
 from .models import *
@@ -20,7 +21,7 @@ parser = WebhookParser(settings.LINE_CHANNEL_SECRET)
 user_stage = {}
 
 
-hostname = 'https://a27054810a14.ngrok.io'
+hostname = 'https://1ef81fc4baf5.ngrok.io'
 
 # def shortLink (link):
 #     BITLY_ACCESS_TOKEN ="770e7c4e4e6b98de8655716a588b5d36301ef27a"
@@ -47,44 +48,48 @@ def callback(request):
             if isinstance(event, MessageEvent):
                 ipt_msg = event.message.text.split('@')
                 if ipt_msg[0] == '1':
-                    url = 'http://127.0.0.1:8000/search/?b='+ipt_msg[1]
-                    print(ipt_msg[1])
-                    output = ""
-                    r = requests.get(url)
-                    data = r.json()
-                    output = data['result']
-                    tob64 = output.encode("UTF-8")
-                    e = base64.b64encode(tob64)
-                    manstr = e.decode("UTF-8")
-                    # print(manstr)
-                    dw_path = hostname+'/dw/?@='+manstr
-                    buttons_template = TemplateSendMessage(
-                        alt_text='Buttons Template',
-                        template=ButtonsTemplate(
-                            title=' ',
-                            text=' ',
-                            thumbnail_image_url='https://i2.read01.com/SIG=2jnq5ks/3049625466664f534234.jpg',
-                            actions=[
-                                # MessageTemplateAction(
-                                #     label='ButtonsTemplate',
-                                #     text='ButtonsTemplate'
-                                # ),
-                                URITemplateAction(
-                                    label='下載',
-                                    uri=dw_path
-                                )
-                                # ,
-                                # PostbackTemplateAction(
-                                #     label='postback',
-                                #     text='postback text',
-                                #     data='postback1'
-                                # )
-                            ]
+                    try:
+                        url = 'http://127.0.0.1:8000/search/?b='+ipt_msg[1]
+                        print(ipt_msg[1])
+                        output = ""
+                        r = requests.get(url)
+                        data = r.json()
+                        output = data['result']
+                        tob64 = output.encode("UTF-8")
+                        e = base64.b64encode(tob64)
+                        manstr = e.decode("UTF-8")
+                        # print(manstr)
+                        dw_path = hostname+'/dw/?@='+manstr
+                        buttons_template = TemplateSendMessage(
+                            alt_text='Buttons Template',
+                            template=ButtonsTemplate(
+                                title=' ',
+                                text=' ',
+                                thumbnail_image_url='https://i2.read01.com/SIG=2jnq5ks/3049625466664f534234.jpg',
+                                actions=[
+                                    # MessageTemplateAction(
+                                    #     label='ButtonsTemplate',
+                                    #     text='ButtonsTemplate'
+                                    # ),
+                                    URITemplateAction(
+                                        label='下載',
+                                        uri=dw_path
+                                    )
+                                    # ,
+                                    # PostbackTemplateAction(
+                                    #     label='postback',
+                                    #     text='postback text',
+                                    #     data='postback1'
+                                    # )
+                                ]
+                            )
                         )
-                    )
-                    line_bot_api.reply_message(event.reply_token, buttons_template)
-                    # line_bot_api.reply_message(
-                    #     event.reply_token, TextSendMessage(text=hostname+'/dw/?@='+manstr))
+                        line_bot_api.reply_message(
+                            event.reply_token, buttons_template)
+                        # line_bot_api.reply_message(
+                        #     event.reply_token, TextSendMessage(text=hostname+'/dw/?@='+manstr))
+                    except Exception as e:
+                        print(e)
 
                 elif ipt_msg[0] == '2':
                     try:
@@ -94,11 +99,16 @@ def callback(request):
                         data = r.json()
                         output = data['result']
                         columns = []
-                        if len(output) == 0 : 
-                            line_bot_api.reply_message(event.reply_token, TextSendMessage(text="查無資料"))
+                        if len(output) == 0:
+                            line_bot_api.reply_message(
+                                event.reply_token, TextSendMessage(text="查無資料"))
                         else:
                             for i in range(len(output)):
                                 img_path = output[i]['url']
+                                try:
+                                    nl_response = requests.get(img_path)   
+                                except requests.exceptions.MissingSchema :
+                                    continue
                                 columns.append(
                                     CarouselColumn(
                                         thumbnail_image_url=output[i]['url'],
